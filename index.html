@@ -62,6 +62,7 @@
             }
             .transparent{
               background:transparent;
+
               color:white;
             }
 
@@ -74,9 +75,9 @@
           <div class="row">
             <div class="col-md-10 col-md-offset-1">
               <div class="panel transparent">
-                <input type="text" class="form-control transparent" name="username" ng-model="username">
+                <input type="text" class="form-control transparent" name="username" ng-model="username" value="Veenz-21389">
                 <br>
-                <button ng-click="newFunction()" class="btn transparent">Press</button>
+                <button ng-click="newFunction()" class="btn transparent" style="background-color:#3d3d3d">Press</button>
               </div>
             </div>
           </div>
@@ -86,7 +87,7 @@
                         <div class="half-unit box-one" ng-show="showBoxOne" >
                             <div class="cont">
                                 <p>
-                                    <bold>{{username}} Nickname</bold>
+                                    <bold>{{dataUsername}} Nickname</bold>
                                 </p>
                                 <p></p>
                             </div>
@@ -125,13 +126,37 @@
                         </div>
                     </div>
 
+
                 </div>
                 <div class="row">
                     <div class="col-md-6 box-one" ng-show="showBoxOne">
+
                         <div ng-controller="myController" class="unit" style="height:auto;">
+                          <p style='text-align:center'>Ranked</p>
                     <canvas id="doughnut" class="chart chart-doughnut" chart-data="data" chart-labels="labels"
                     chart-colors="colors" chart-options="options">
                     </canvas>
+
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="half-unit box-one" ng-show="showBoxOne" >
+                            <div class="cont">
+                                <p ng-style='RankStyle'>
+                                    <bold>{{competitiveRank}} </bold>
+                                </p>
+                                <p><bold>GOLD</bold>ELO</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-10 col-md-offset-1">
+                        <div class="half-unit box-one" ng-show="errors" >
+                            <div class="cont">
+                                <p>
+                                    <bold>Nessun utente trovato con {{errorUsername}}</bold>
+                                </p>
+                                <p></p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -144,6 +169,7 @@
 
          mainApp.controller('myController', function($scope, $http) {
               $scope.showBoxOne = false;
+              $scope.errors = false;
               $scope.newFunction = function(){
                 $scope.apiUrl = 'https://api.lootbox.eu/pc/eu/'+$scope.username+'/profile';
                 $scope.quickWin = "toDefine";
@@ -153,12 +179,13 @@
                       if(requestData['error'] != undefined){
                         return $scope.setEverything("nope");
                       }
-                      $scope.username  = requestData.data.username;
+                      $scope.dataUsername  = requestData.data.username;
                       $scope.quickWin = requestData.data.games.quick.wins;
                       $scope.quickLose = "null";
                       $scope.level = requestData.data.level;
                       $scope.competitiveWin = requestData.data.games.competitive.wins;
                       $scope.competitiveLose = requestData.data.games.competitive.lost;
+                      $scope.competitiveRank = requestData.data.competitive.rank;
                       $scope.labels = ["Vittorie", "Sconfitte"];
                       $scope.colors = ['#FD1F5E','#1EF9A1'];
                       $scope.options = {legend:
@@ -172,14 +199,19 @@
                   .error(function(data) {
                     alert('there were some errors');
                   });
-
+                  $scope.RankStyle = {
+                    'color' : 'yellow'
+                  };
 
             }
             $scope.setEverything = function(status){
               if(status=='ok')
                 $scope.showBoxOne = true;
-              else
+              else{
                 console.log("there were some errors");
+                $scope.errors = true;
+                $scope.errorUsername = $scope.username;
+              }
             }
          });
 
