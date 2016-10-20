@@ -1,0 +1,195 @@
+<html>
+
+    <head>
+        <title>Angular JS</title>
+        <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+        <script src="js/angular.js"></script>
+        <script src="js/angular-animate.js"></script>
+        <script src="node_modules/chart.js/dist/Chart.min.js"></script>
+        <script src="node_modules/angular-chart.js/dist/angular-chart.min.js"></script>
+        <style>
+            body {
+                background-color: #1f1f1f;
+                font-family: 'Open Sans', sans-serif;
+            }
+            .panel-custom{
+                min-height: 200px;
+            }
+            .central-component{
+                text-align:center;
+                line-height: 200px;
+
+            }
+            .text-panel{
+                font-weight: bold;
+                font-size:20px;
+            }
+            .half-unit {
+                margin-bottom: 30px;
+                padding-bottom: 4px;
+                border: 1px solid #383737;
+                background-color: #3d3d3d;
+                color:white;
+                height:200px;
+            }
+            .half-unit bold{
+                font-family: 'Open Sans', sans-serif;
+                font-size:26px;
+                font-weight:bold;
+
+                vertical-align:middle;
+            }
+            .cont {
+                text-align:center;
+                margin-top:50px;
+            }
+            .unit {
+                margin-bottom: 30px;
+                padding-bottom: 4px;
+                border: 1px solid #383737;
+                background-color: #3d3d3d;
+                color:white;
+                height:257px;
+            }
+            .box-one {
+              -webkit-transition:all linear 0.5s;
+              transition:all linear 0.5s;
+            }
+
+            .box-one.ng-hide {
+              opacity:0;
+              /* transform: scale(0.8); */
+            }
+            .transparent{
+              background:transparent;
+              color:white;
+            }
+
+        </style>
+    </head>
+
+   <body>
+     <br>
+     <div ng-app="mainApp" ng-controller="myController">
+          <div class="row">
+            <div class="col-md-10 col-md-offset-1">
+              <div class="panel transparent">
+                <input type="text" class="form-control transparent" name="username" ng-model="username">
+                <br>
+                <button ng-click="newFunction()" class="btn transparent">Press</button>
+              </div>
+            </div>
+          </div>
+            <div class="col-md-10 col-md-offset-1">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="half-unit box-one" ng-show="showBoxOne" >
+                            <div class="cont">
+                                <p>
+                                    <bold>{{username}} Nickname</bold>
+                                </p>
+                                <p></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="half-unit box-one" ng-show="showBoxOne" >
+                            <div class="cont">
+                                <p>
+                                    <bold>{{level}} </bold>
+                                    <p style="color:green"><bold>Level</bold></p>
+                                </p>
+                                <p></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="half-unit box-one" ng-show="showBoxOne" >
+                            <div class="cont">
+                                <p>
+                                    <bold>{{quickWin}}</bold>
+                                    <p style="color:green"><bold>Vittorie</bold></p>
+                                </p>
+                                <p></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="half-unit box-one" ng-show="showBoxOne" >
+                            <div class="cont">
+                                <p>
+                                    <bold>{{quickLose}} <br>Sconfitte</bold>
+                                </p>
+                                <p></p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-6 box-one" ng-show="showBoxOne">
+                        <div ng-controller="myController" class="unit" style="height:auto;">
+                    <canvas id="doughnut" class="chart chart-doughnut" chart-data="data" chart-labels="labels"
+                    chart-colors="colors" chart-options="options">
+                    </canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+      </div>
+
+      <script>
+         var mainApp = angular.module("mainApp", ['chart.js','ngAnimate']);
+
+         mainApp.controller('myController', function($scope, $http) {
+              $scope.showBoxOne = false;
+              $scope.newFunction = function(){
+                $scope.url = "profile.json";
+                $scope.secondUrl = 'https://api.lootbox.eu/pc/eu/'+$scope.username+'/profile';
+                alert($scope.secondUrl);
+                if($scope.username == "Veenz")
+                  alert("o");
+                //$scope.anotherField =
+                $scope.quickWin = "toDefine";
+                $http.get($scope.secondUrl)
+                  .success(function(requestData) {
+                      console.log('joining the http request');
+                      if(requestData['error'] != undefined){
+                        //console.log(requestData['error']);
+                        return $scope.setEverything("nope");
+                      }
+                      $scope.username  = requestData.data.username;
+                      $scope.quickWin = requestData.data.games.quick.wins;
+                      $scope.quickLose = "null";
+                      $scope.level = requestData.data.level;
+                      $scope.competitiveWin = requestData.data.games.competitive.wins;
+                      $scope.competitiveLose = requestData.data.games.competitive.lost;
+                      $scope.labels = ["Vittorie", "Sconfitte"];
+                      $scope.colors = ['#FD1F5E','#1EF9A1'];
+                      $scope.options = {legend:
+                                          {
+                                              display: true
+                                          }
+                                       };
+                      $scope.data = [$scope.competitiveWin, $scope.competitiveLose];
+                      return $scope.setEverything("ok");
+                  })
+                  .error(function(data) {
+                    alert('lol');
+                  });
+
+
+            }
+            $scope.setEverything = function(status){
+              if(status=='ok')
+                $scope.showBoxOne = true;
+              else
+                console.log("there were some errors");
+            }
+         });
+
+      </script>
+
+   </body>
+</html>
