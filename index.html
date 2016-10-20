@@ -145,18 +145,12 @@
          mainApp.controller('myController', function($scope, $http) {
               $scope.showBoxOne = false;
               $scope.newFunction = function(){
-                $scope.url = "profile.json";
-                $scope.secondUrl = 'https://api.lootbox.eu/pc/eu/'+$scope.username+'/profile';
-                alert($scope.secondUrl);
-                if($scope.username == "Veenz")
-                  alert("o");
-                //$scope.anotherField =
+                $scope.apiUrl = 'https://api.lootbox.eu/pc/eu/'+$scope.username+'/profile';
                 $scope.quickWin = "toDefine";
-                $http.get($scope.secondUrl)
+                $http.get($scope.apiUrl)
                   .success(function(requestData) {
                       console.log('joining the http request');
                       if(requestData['error'] != undefined){
-                        //console.log(requestData['error']);
                         return $scope.setEverything("nope");
                       }
                       $scope.username  = requestData.data.username;
@@ -176,7 +170,7 @@
                       return $scope.setEverything("ok");
                   })
                   .error(function(data) {
-                    alert('lol');
+                    alert('there were some errors');
                   });
 
 
