@@ -87,7 +87,8 @@
                         <div class="half-unit box-one" ng-show="showBoxOne" >
                             <div class="cont">
                                 <p>
-                                    <bold>{{dataUsername}} Nickname</bold>
+                                    <bold>{{dataUsername}} </bold>
+                                    <p style="color:green"><bold>Nickname</bold></p>
                                 </p>
                                 <p></p>
                             </div>
@@ -115,7 +116,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <!--<div class="col-md-3">
                         <div class="half-unit box-one" ng-show="showBoxOne" >
                             <div class="cont">
                                 <p>
@@ -124,20 +125,20 @@
                                 <p></p>
                             </div>
                         </div>
-                    </div>
+                    </div>!-->
 
 
                 </div>
                 <div class="row">
                     <div class="col-md-6 box-one" ng-show="showBoxOne">
-
-                        <div ng-controller="myController" class="unit" style="height:auto;">
+                      <div class="unit" style="height:auto;">
+                        <div ng-controller="myController">
                           <p style='text-align:center'>Ranked</p>
-                    <canvas id="doughnut" class="chart chart-doughnut" chart-data="data" chart-labels="labels"
-                    chart-colors="colors" chart-options="options">
-                    </canvas>
-
+                          <canvas id="doughnut" class="chart chart-doughnut" chart-data="data" chart-labels="labels"
+                          chart-colors="colors" chart-options="options">
+                          </canvas>
                         </div>
+                      </div>
                     </div>
                     <div class="col-md-3">
                         <div class="half-unit box-one" ng-show="showBoxOne" >
@@ -150,7 +151,7 @@
                         </div>
                     </div>
                     <div class="col-md-10 col-md-offset-1">
-                        <div class="half-unit box-one" ng-show="errors" >
+                        <div class="half-unit box-one" ng-show="showErrors" >
                             <div class="cont">
                                 <p>
                                     <bold>Nessun utente trovato con {{errorUsername}}</bold>
@@ -169,9 +170,10 @@
 
          mainApp.controller('myController', function($scope, $http) {
               $scope.showBoxOne = false;
-              $scope.errors = false;
+              $scope.showErrors = false;
               $scope.newFunction = function(){
-                $scope.apiUrl = 'https://api.lootbox.eu/pc/eu/'+$scope.username+'/profile';
+                //$scope.apiUrl = 'https://api.lootbox.eu/pc/eu/'+$scope.username+'/profile';
+                $scope.apiUrl='profile.json';
                 $scope.quickWin = "toDefine";
                 $http.get($scope.apiUrl)
                   .success(function(requestData) {
@@ -179,9 +181,9 @@
                       if(requestData['error'] != undefined){
                         return $scope.setEverything("nope");
                       }
+                      console.log(requestData.data);
                       $scope.dataUsername  = requestData.data.username;
                       $scope.quickWin = requestData.data.games.quick.wins;
-                      $scope.quickLose = "null";
                       $scope.level = requestData.data.level;
                       $scope.competitiveWin = requestData.data.games.competitive.wins;
                       $scope.competitiveLose = requestData.data.games.competitive.lost;
@@ -193,28 +195,57 @@
                                               display: true
                                           }
                                        };
+
                       $scope.data = [$scope.competitiveWin, $scope.competitiveLose];
                       return $scope.setEverything("ok");
                   })
                   .error(function(data) {
                     alert('there were some errors');
                   });
-                  $scope.RankStyle = {
-                    'color' : 'yellow'
-                  };
+
 
             }
+
             $scope.setEverything = function(status){
-              if(status=='ok')
+              if(status=='ok'){
+                $scope.RankStyle = {
+                  'color' : null //inizializzazione colore
+                };
                 $scope.showBoxOne = true;
-              else{
+                $scope.RankStyle.color=$scope.switchRank($scope.competitiveRank);
+                $scope.showErrors = false;
+              }else{
                 console.log("there were some errors");
-                $scope.errors = true;
+                $scope.showErrors = true;
                 $scope.errorUsername = $scope.username;
               }
             }
+
+            $scope.switchRank = function(rank){
+              var rankColor = {
+                'bronze' : 'red',
+                'silver' : 'grey',
+                'gold' : 'yellow',
+                'platinum' : 'white',
+                'diamond' : 'lightblue',
+                'master' :'todefine',
+                'grandmaster' : 'todefine'
+              };
+              if(rank <= 1499)
+                return rankColor['bronze'];
+              else if(rank <= 1999)
+                return rankColor['silver'];
+              else if(rank <= 2499)
+                return rankColor['gold'];
+              else
+                return 'green';//da rimuovere
+              }
+
          });
 
+
+          // Elo: 1 - 1499 Bronze. 1500 - 1999 Silver. 2000 - 2499 Gold. 2500 - 2999 Platinum. 3000 - 3499 Diamond
+          //3500 - 3999 Master. 4000+ Grandmaster
       </script>
 
    </body>
