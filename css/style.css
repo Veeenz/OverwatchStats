@@ -1,0 +1,57 @@
+body {
+    background-color: #1f1f1f;
+    font-family: 'Open Sans', sans-serif;
+}
+.panel-custom{
+    min-height: 200px;
+}
+.central-component{
+    text-align:center;
+    line-height: 200px;
+
+}
+.text-panel{
+    font-weight: bold;
+    font-size:20px;
+}
+.half-unit {
+    margin-bottom: 30px;
+    padding-bottom: 4px;
+    border: 1px solid #383737;
+    background-color: #3d3d3d;
+    color:white;
+    height:200px;
+}
+.half-unit bold{
+    font-family: 'Open Sans', sans-serif;
+    font-size:26px;
+    font-weight:bold;
+
+    vertical-align:middle;
+}
+.cont {
+    text-align:center;
+    margin-top:50px;
+}
+.unit {
+    margin-bottom: 30px;
+    padding-bottom: 4px;
+    border: 1px solid #383737;
+    background-color: #3d3d3d;
+    color:white;
+    height:257px;
+}
+.box-one {
+  -webkit-transition:all linear 0.5s;
+  transition:all linear 0.5s;
+}
+
+.box-one.ng-hide {
+  opacity:0;
+  /* transform: scale(0.8); */
+}
+.transparent{
+  background:transparent;
+
+  color:white;
+}

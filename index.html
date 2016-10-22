@@ -7,66 +7,7 @@
         <script src="js/angular-animate.js"></script>
         <script src="node_modules/chart.js/dist/Chart.min.js"></script>
         <script src="node_modules/angular-chart.js/dist/angular-chart.min.js"></script>
-        <style>
-            body {
-                background-color: #1f1f1f;
-                font-family: 'Open Sans', sans-serif;
-            }
-            .panel-custom{
-                min-height: 200px;
-            }
-            .central-component{
-                text-align:center;
-                line-height: 200px;
-
-            }
-            .text-panel{
-                font-weight: bold;
-                font-size:20px;
-            }
-            .half-unit {
-                margin-bottom: 30px;
-                padding-bottom: 4px;
-                border: 1px solid #383737;
-                background-color: #3d3d3d;
-                color:white;
-                height:200px;
-            }
-            .half-unit bold{
-                font-family: 'Open Sans', sans-serif;
-                font-size:26px;
-                font-weight:bold;
-
-                vertical-align:middle;
-            }
-            .cont {
-                text-align:center;
-                margin-top:50px;
-            }
-            .unit {
-                margin-bottom: 30px;
-                padding-bottom: 4px;
-                border: 1px solid #383737;
-                background-color: #3d3d3d;
-                color:white;
-                height:257px;
-            }
-            .box-one {
-              -webkit-transition:all linear 0.5s;
-              transition:all linear 0.5s;
-            }
-
-            .box-one.ng-hide {
-              opacity:0;
-              /* transform: scale(0.8); */
-            }
-            .transparent{
-              background:transparent;
-
-              color:white;
-            }
-
-        </style>
+        <link href="css/style.css" rel="stylesheet"/>
     </head>
 
    <body>
@@ -165,88 +106,7 @@
 
       </div>
 
-      <script>
-         var mainApp = angular.module("mainApp", ['chart.js','ngAnimate']);
-
-         mainApp.controller('myController', function($scope, $http) {
-              $scope.showBoxOne = false;
-              $scope.showErrors = false;
-              $scope.newFunction = function(){
-                //$scope.apiUrl = 'https://api.lootbox.eu/pc/eu/'+$scope.username+'/profile';
-                $scope.apiUrl='profile.json';
-                $scope.quickWin = "toDefine";
-                $http.get($scope.apiUrl)
-                  .success(function(requestData) {
-                      console.log('joining the http request');
-                      if(requestData['error'] != undefined){
-                        return $scope.setEverything("nope");
-                      }
-                      console.log(requestData.data);
-                      $scope.dataUsername  = requestData.data.username;
-                      $scope.quickWin = requestData.data.games.quick.wins;
-                      $scope.level = requestData.data.level;
-                      $scope.competitiveWin = requestData.data.games.competitive.wins;
-                      $scope.competitiveLose = requestData.data.games.competitive.lost;
-                      $scope.competitiveRank = requestData.data.competitive.rank;
-                      $scope.labels = ["Vittorie", "Sconfitte"];
-                      $scope.colors = ['#FD1F5E','#1EF9A1'];
-                      $scope.options = {legend:
-                                          {
-                                              display: true
-                                          }
-                                       };
-
-                      $scope.data = [$scope.competitiveWin, $scope.competitiveLose];
-                      return $scope.setEverything("ok");
-                  })
-                  .error(function(data) {
-                    alert('there were some errors');
-                  });
-
-
-            }
-
-            $scope.setEverything = function(status){
-              if(status=='ok'){
-                $scope.RankStyle = {
-                  'color' : null //inizializzazione colore
-                };
-                $scope.showBoxOne = true;
-                $scope.RankStyle.color=$scope.switchRank($scope.competitiveRank);
-                $scope.showErrors = false;
-              }else{
-                console.log("there were some errors");
-                $scope.showErrors = true;
-                $scope.errorUsername = $scope.username;
-              }
-            }
-
-            $scope.switchRank = function(rank){
-              var rankColor = {
-                'bronze' : 'red',
-                'silver' : 'grey',
-                'gold' : 'yellow',
-                'platinum' : 'white',
-                'diamond' : 'lightblue',
-                'master' :'todefine',
-                'grandmaster' : 'todefine'
-              };
-              if(rank <= 1499)
-                return rankColor['bronze'];
-              else if(rank <= 1999)
-                return rankColor['silver'];
-              else if(rank <= 2499)
-                return rankColor['gold'];
-              else
-                return 'green';//da rimuovere
-              }
-
-         });
-
-
-          // Elo: 1 - 1499 Bronze. 1500 - 1999 Silver. 2000 - 2499 Gold. 2500 - 2999 Platinum. 3000 - 3499 Diamond
-          //3500 - 3999 Master. 4000+ Grandmaster
-      </script>
+      <script src="js/app.js"></script>
 
    </body>
 </html>
